@@ -17,7 +17,7 @@ type Bacalao struct {
 }
 
 func Execute() {
-	g := Bacalao{"a", "a", Vaca{"a", "a"}}
+	g := Bacalao{"a", "a", Vaca{"amarillo", "a"}}
 	ret, err := json.MarshalIndent(g, "", "  ")
 	if err != nil {
 		fmt.Println(err)
