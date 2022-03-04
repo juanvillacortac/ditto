@@ -1,0 +1,181 @@
+{
+  "Syntax": {
+    "ProtobufVersion": "proto3",
+    "ProtobufVersionQuote": "\"proto3\"",
+    "Comments": null,
+    "InlineComment": null,
+    "Meta": {
+      "Pos": {
+        "Filename": "test.proto",
+        "Offset": 0,
+        "Line": 1,
+        "Column": 1
+      },
+      "LastPos": {
+        "Filename": "test.proto",
+        "Offset": 17,
+        "Line": 1,
+        "Column": 18
+      }
+    }
+  },
+  "ProtoBody": [
+    {
+      "Name": "ejemplo",
+      "Comments": null,
+      "InlineComment": null,
+      "Meta": {
+        "Pos": {
+          "Filename": "test.proto",
+          "Offset": 20,
+          "Line": 3,
+          "Column": 1
+        },
+        "LastPos": {
+          "Filename": "test.proto",
+          "Offset": 35,
+          "Line": 3,
+          "Column": 16
+        }
+      }
+    },
+    {
+      "MessageName": "Anidado",
+      "MessageBody": null,
+      "Comments": null,
+      "InlineComment": null,
+      "InlineCommentBehindLeftCurly": null,
+      "Meta": {
+        "Pos": {
+          "Filename": "test.proto",
+          "Offset": 38,
+          "Line": 5,
+          "Column": 1
+        },
+        "LastPos": {
+          "Filename": "test.proto",
+          "Offset": 55,
+          "Line": 5,
+          "Column": 18
+        }
+      }
+    },
+    {
+      "MessageName": "Prueba",
+      "MessageBody": [
+        {
+          "IsRepeated": false,
+          "IsRequired": false,
+          "IsOptional": false,
+          "Type": "string",
+          "FieldName": "texto",
+          "FieldNumber": "1",
+          "FieldOptions": [
+            {
+              "OptionName": "default",
+              "Constant": "\"1\""
+            }
+          ],
+          "Comments": null,
+          "InlineComment": {
+            "Raw": "// Hello",
+            "Meta": {
+              "Pos": {
+                "Filename": "test.proto",
+                "Offset": 111,
+                "Line": 8,
+                "Column": 37
+              },
+              "LastPos": {
+                "Filename": "test.proto",
+                "Offset": 118,
+                "Line": 8,
+                "Column": 44
+              }
+            }
+          },
+          "Meta": {
+            "Pos": {
+              "Filename": "test.proto",
+              "Offset": 77,
+              "Line": 8,
+              "Column": 3
+            },
+            "LastPos": {
+              "Filename": "",
+              "Offset": 0,
+              "Line": 0,
+              "Column": 0
+            }
+          }
+        },
+        {
+          "IsRepeated": true,
+          "IsRequired": false,
+          "IsOptional": false,
+          "Type": "Anidado",
+          "FieldName": "anidados",
+          "FieldNumber": "2",
+          "FieldOptions": null,
+          "Comments": null,
+          "InlineComment": null,
+          "Meta": {
+            "Pos": {
+              "Filename": "test.proto",
+              "Offset": 122,
+              "Line": 9,
+              "Column": 3
+            },
+            "LastPos": {
+              "Filename": "",
+              "Offset": 0,
+              "Line": 0,
+              "Column": 0
+            }
+          }
+        },
+        {
+          "MessageName": "inner",
+          "MessageBody": null,
+          "Comments": null,
+          "InlineComment": null,
+          "InlineCommentBehindLeftCurly": null,
+          "Meta": {
+            "Pos": {
+              "Filename": "test.proto",
+              "Offset": 155,
+              "Line": 10,
+              "Column": 3
+            },
+            "LastPos": {
+              "Filename": "test.proto",
+              "Offset": 173,
+              "Line": 11,
+              "Column": 3
+            }
+          }
+        }
+      ],
+      "Comments": null,
+      "InlineComment": null,
+      "InlineCommentBehindLeftCurly": null,
+      "Meta": {
+        "Pos": {
+          "Filename": "test.proto",
+          "Offset": 58,
+          "Line": 7,
+          "Column": 1
+        },
+        "LastPos": {
+          "Filename": "test.proto",
+          "Offset": 175,
+          "Line": 12,
+          "Column": 1
+        }
+      }
+    }
+  ],
+  "Meta": {
+    "Filename": "test.proto"
+  }
+}

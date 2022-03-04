@@ -1,0 +1,15 @@
+
+  class Anidado {
+    
+  }
+
+
+  class Test {
+    
+      texto: string
+    
+      anidados: Anidado
+    
+  }
+
+

@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package ejemplo;
+
+import "google/protobuf/descriptor.proto";
+
+extend google.protobuf.MessageOptions {
+  string table_name = 5001;
+  string sp_name = 5002;
+}
+
+message AnidadoFoo {
+  string foo = 1;
+}
+
+message Anidado {
+  repeated AnidadoFoo foo = 1;
+}
+
+message Test {
+  option (table_name) = "Prueba";
+
+  string texto = 1 [default = "1"]; // Hello
+  repeated Anidado anidados = 2;
+}
