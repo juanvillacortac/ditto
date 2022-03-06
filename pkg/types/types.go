@@ -6,16 +6,19 @@ type (
 )
 
 const (
-	Integer IntrinsicType = "integer"
+	Int32   IntrinsicType = "int32"
+	Int64   IntrinsicType = "int64"
 	Double  IntrinsicType = "double"
 	String  IntrinsicType = "string"
+	Boolean IntrinsicType = "boolean"
 	Date    IntrinsicType = "date"
 )
 
 var TypesMap = map[string]IntrinsicType{
-	"int32":  Integer,
-	"int64":  Integer,
+	"int32":  Int32,
+	"int64":  Int64,
 	"double": Double,
 	"string": String,
+	"bool":   Boolean,
 	"date":   Date,
 }

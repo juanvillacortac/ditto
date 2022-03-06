@@ -6,8 +6,10 @@
       "template": "templates/ts/model.ts.go.tpl",
       "output": "generated/ts/models/[model-].ts",
       "types": {
+        "int32": "number",
+        "int64": "number",
         "double": "number",
-        "integer": "number",
+        "boolean": "boolean",
         "string": "string",
         "date": "Date"
       },
@@ -20,8 +22,10 @@
       "template": "templates/ts/service.ts.go.tpl",
       "output": "generated/ts/services/[model-].service.ts",
       "types": {
+        "int32": "number",
+        "int64": "number",
         "double": "number",
-        "integer": "number",
+        "boolean": "boolean",
         "string": "string",
         "date": "Date"
       },
