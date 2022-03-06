@@ -1,6 +1,0 @@
-{{ range $key, $class := . }}
-class {{ $class.Name }} {
-  {{ range $class.Props}}{{ .Name }}: {{ .Type }}{{ if .IsArray }}[]{{ end }}
-  {{ end }}
-}
-{{ end }}

@@ -1,19 +1,21 @@
 package types
 
 type (
-	Type          interface{}
-	PrimitiveType string
+	Type          string
+	IntrinsicType string
 )
 
 const (
-	Integer PrimitiveType = "integer"
-	Double  PrimitiveType = "double"
-	String  PrimitiveType = "string"
+	Integer IntrinsicType = "integer"
+	Double  IntrinsicType = "double"
+	String  IntrinsicType = "string"
+	Date    IntrinsicType = "date"
 )
 
-var TypesMap = map[string]PrimitiveType{
+var TypesMap = map[string]IntrinsicType{
 	"int32":  Integer,
 	"int64":  Integer,
 	"double": Double,
 	"string": String,
+	"date":   Date,
 }

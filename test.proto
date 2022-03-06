@@ -14,12 +14,15 @@ message AnidadoFoo {
 }
 
 message Anidado {
+  date datetime = 4;
   repeated AnidadoFoo foo = 1;
 }
 
 message Test {
   option (table_name) = "Prueba";
 
-  string texto = 1 [default = "1"]; // Hello
+  int32 texto = 1 [default = -1, (aloha) = 1];
+  date text = 2 [default = "now()"];
   repeated Anidado anidados = 2;
+  repeated AnidadoFoo anidado = 3;
 }

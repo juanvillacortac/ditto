@@ -6,65 +6,61 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/juanvillacortac/rosetta/pkg/generators"
-	"github.com/juanvillacortac/rosetta/pkg/model"
-	"github.com/yoheimuta/go-protoparser/v4"
+	"github.com/juanvillacortac/rosetta/pkg/program"
 )
 
 var (
-	proto      = flag.String("proto", "test.proto", "path to the Protocol Buffer file")
+	source     = flag.String("source", "", "path to the Protocol Buffer file")
 	debug      = flag.Bool("debug", false, "debug flag to output more parsing process detail")
 	permissive = flag.Bool("permissive", true, "permissive flag to allow the permissive parsing rather than the just documented spec")
-	unordered  = flag.Bool("unordered", false, "unordered flag to output another one without interface{}")
 )
 
 func run() int {
-	reader, err := os.Open(*proto)
+	flag.Parse()
+
+	if *source == "" {
+		fmt.Fprintf(os.Stderr, "You must provide a source \".json\" file\n")
+		flag.Usage()
+		return 1
+	}
+
+	reader, err := os.Open(*source)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to open %s, err %v\n", *proto, err)
+		fmt.Fprintf(os.Stderr, "failed to open %s, err %v\n", *source, err)
 		return 1
 	}
 	defer reader.Close()
 
-	got, err := protoparser.Parse(
-		reader,
-		protoparser.WithDebug(*debug),
-		protoparser.WithPermissive(*permissive),
-		protoparser.WithFilename(filepath.Base(*proto)),
-	)
+	p, err := program.NewProgramFromJson(reader)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to parse, err %v\n", err)
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		return 1
+	}
+	if err := p.Parse(
+		program.WithDebug(*debug),
+		program.WithPermissive(*permissive),
+	); err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return 1
 	}
 
-	if models, err := model.GetModelsFromPrograms(got); err != nil {
-		fmt.Fprintf(os.Stderr, "[Models parsing error]: %v\n", err)
-	} else {
-		generators.Generate(models)
+	files, err := p.Generate()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		return 1
 	}
-
-	// var v interface{}
-
-	// if models, err := model.GetModelsFromPrograms(got); err != nil {
-	// 	fmt.Fprintf(os.Stderr, "[Models parsing error]: %v\n", err)
-	// } else {
-	// 	v = models
-	// }
-
-	// v = got
-	// if *unordered {
-	// 	v, err = protoparser.UnorderedInterpret(got)
-	// 	if err != nil {
-	// 		fmt.Fprintf(os.Stderr, "failed to interpret, err %v\n", err)
-	// 		return 1
-	// 	}
-	// }
-
-	// gotJSON, err := json.MarshalIndent(v, "", "  ")
-	// if err != nil {
-	// 	fmt.Fprintf(os.Stderr, "failed to marshal, err %v\n", err)
-	// }
-	// fmt.Print(string(gotJSON))
+	for _, f := range files {
+		path := filepath.Dir(f.Filename)
+		if err := os.MkdirAll(path, os.ModePerm); err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			return 1
+		}
+		if err := os.WriteFile(f.Filename, []byte(f.Body), os.ModePerm); err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			return 1
+		}
+	}
+	fmt.Println("Done!")
 	return 0
 }
 
