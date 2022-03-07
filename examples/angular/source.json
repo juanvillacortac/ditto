@@ -1,10 +1,10 @@
 {
-  "file": "test.proto",
+  "file": "schema.proto",
   "generators": [
     {
       "name": "TS Models",
-      "template": "templates/ts/model.ts.go.tpl",
-      "output": "generated/ts/models/[model-].ts",
+      "template": "templates/model.ts.go.tpl",
+      "output": "generated/models/[model-].ts",
       "types": {
         "int32": "number",
         "int64": "number",
@@ -19,8 +19,8 @@
     },
     {
       "name": "TS Service",
-      "template": "templates/ts/service.ts.go.tpl",
-      "output": "generated/ts/services/[model-].service.ts",
+      "template": "templates/service.ts.go.tpl",
+      "output": "generated/services/[model-].service.ts",
       "types": {
         "int32": "number",
         "int64": "number",
