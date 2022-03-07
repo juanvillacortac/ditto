@@ -65,7 +65,16 @@ func (models ModelMap) GetModelDeps(modelName string, deps []string) []string {
 
 	for _, p := range m.Props {
 		if mm, ok := models[string(p.Type)]; ok {
-			clone = append(clone, mm.ModelName)
+			ok := false
+			for _, d := range clone {
+				if d == mm.ModelName {
+					ok = true
+					break
+				}
+			}
+			if !ok {
+				clone = append(clone, mm.ModelName)
+			}
 		}
 	}
 	return clone
