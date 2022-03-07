@@ -2,19 +2,19 @@ package generators
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
 	"text/template"
 
 	"github.com/juanvillacortac/rosetta/pkg/ast"
-	"github.com/juanvillacortac/rosetta/pkg/types"
 	"github.com/juanvillacortac/rosetta/pkg/utils"
 )
 
 type Generator func(root *ast.RootNode) ([]OutputFile, error)
 
-type TypesMap map[types.IntrinsicType]string
+type TypesMap map[string]string
 
 type GenerateConfig struct {
 	Name     string            `json:"name"`
@@ -26,14 +26,13 @@ type GenerateConfig struct {
 
 func AdaptModel(models ast.ModelMap, typesMap TypesMap) ast.ModelMap {
 	clone := make(ast.ModelMap)
-	for _, m := range models {
-		p := new(ast.Model)
-		*p = *m
-		clone[m.ModelName] = p
+	buff, _ := json.Marshal(models)
+	if err := json.Unmarshal(buff, &clone); err != nil {
+		panic(err)
 	}
 	for k, m := range clone {
 		for i, p := range m.Props {
-			if t, ok := typesMap[types.IntrinsicType(p.Type)]; ok {
+			if t, ok := typesMap[p.Type]; ok {
 				clone[k].Props[i].Type = t
 			}
 		}
