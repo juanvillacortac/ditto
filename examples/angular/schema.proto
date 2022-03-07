@@ -9,21 +9,20 @@ extend google.protobuf.MessageOptions {
   string sp_name = 5002;
 }
 
-message AnidadoFoo {
-  string foo = 1;
+message Auxiliary {
+  int64 id = 1;
+  string name = 2;
+  boolean active = 3;
+  int64 idUser = 4;
+  string userName = 5;
 }
 
-message Anidado {
-  date datetime = 4;
-  repeated AnidadoFoo foo = 1;
+message AuxiliaryListFilter {
+  int64 id = 1 [default = -1];
+  int32 active = 3 [default = -1];
+  int64 idUser = 4 [default = -1];
 }
 
-message Test {
-  option (table_name) = "Prueba";
-
-  bool flag = 1 [default = true];
-  int32 texto = 2 [default = -1, (aloha) = 1];
-  date text = 3 [default = "now()"];
-  repeated Anidado anidados = 2;
-  repeated AnidadoFoo anidado = 3;
+message AuxiliaryFilter {
+  int64 id = 1;
 }
