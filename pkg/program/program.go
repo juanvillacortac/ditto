@@ -9,16 +9,16 @@ import (
 
 	"github.com/juanvillacortac/rosetta/pkg/ast"
 	"github.com/juanvillacortac/rosetta/pkg/generators"
-	"github.com/yoheimuta/go-protoparser/v4"
-	proto "github.com/yoheimuta/go-protoparser/v4/parser"
+	"github.com/juanvillacortac/rosetta/pkg/parser/proto"
+
+	p_ "github.com/yoheimuta/go-protoparser/v4"
 )
 
 type Program struct {
 	File       string                      `json:"file"`
 	Generators []generators.GenerateConfig `json:"generators"`
 
-	source *proto.Proto
-	models ast.ModelMap
+	root *ast.RootNode
 }
 
 func NewProgramFromJson(reader io.Reader) (*Program, error) {
@@ -49,10 +49,10 @@ func (p *Program) Parse(options ...Option) error {
 	}
 	defer reader.Close()
 
-	got, err := protoparser.Parse(
+	got, err := p_.Parse(
 		reader,
-		protoparser.WithDebug(config.debug),
-		protoparser.WithPermissive(config.debug),
+		p_.WithDebug(config.debug),
+		p_.WithPermissive(config.debug),
 	)
 	if config.debug {
 		gotJSON, err := json.MarshalIndent(got, "", "  ")
@@ -65,12 +65,11 @@ func (p *Program) Parse(options ...Option) error {
 	if err != nil {
 		return fmt.Errorf("[Proto parsing error]: %v", err)
 	}
-	p.source = got
-	models, err := ast.GetModelsFromProto(got)
+	root, err := proto.GetRootNodeFromProto(got)
 	if err != nil {
 		return fmt.Errorf("[Models parsing error]: %v", err)
 	}
-	p.models = models
+	p.root = root
 
 	return nil
 }
@@ -79,7 +78,7 @@ func (p *Program) Generate() ([]generators.OutputFile, error) {
 	files := make([]generators.OutputFile, 0)
 	for i, g := range p.Generators {
 		fmt.Fprintf(os.Stdout, "[%d/%d] %s\n", i+1, len(p.Generators), g.Name)
-		fs, err := generators.Generate(p.models, g)
+		fs, err := generators.Generate(p.root, g)
 		if err != nil {
 			return nil, err
 		}

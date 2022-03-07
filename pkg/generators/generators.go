@@ -12,7 +12,7 @@ import (
 	"github.com/juanvillacortac/rosetta/pkg/utils"
 )
 
-type Generator func(models ast.ModelMap) ([]OutputFile, error)
+type Generator func(root *ast.RootNode) ([]OutputFile, error)
 
 type TypesMap map[types.IntrinsicType]string
 
@@ -25,7 +25,12 @@ type GenerateConfig struct {
 }
 
 func AdaptModel(models ast.ModelMap, typesMap TypesMap) ast.ModelMap {
-	clone := models
+	clone := make(ast.ModelMap)
+	for _, m := range models {
+		p := new(ast.Model)
+		*p = *m
+		clone[m.ModelName] = p
+	}
 	for k, m := range clone {
 		for i, p := range m.Props {
 			if t, ok := typesMap[types.IntrinsicType(p.Type)]; ok {
@@ -36,7 +41,8 @@ func AdaptModel(models ast.ModelMap, typesMap TypesMap) ast.ModelMap {
 	return clone
 }
 
-func Generate(models ast.ModelMap, options GenerateConfig) ([]OutputFile, error) {
+func Generate(root *ast.RootNode, options GenerateConfig) ([]OutputFile, error) {
+	models := root.Models
 	reader, err := os.Open(options.Template)
 	if err != nil {
 		err = fmt.Errorf("failed to open %s, err %v", options.Template, err)
@@ -60,36 +66,12 @@ func Generate(models ast.ModelMap, options GenerateConfig) ([]OutputFile, error)
 			}
 			return *p.DefaultValue
 		},
-		"Models":   func() ast.ModelMap { return models },
-		"GetModel": func(modelName string) ast.Model { return *models[modelName] },
-		"GetNodeName": func(n ast.Node) string {
-			return n.Name()
-		},
-		"GetPropOptions": func(n ast.Model) ast.Options {
-			return n.Options()
-		},
-		"GetPropOption": func(m ast.Model, optionName string) string {
-			o, ok := m.Options()[optionName]
-			if !ok {
-				return ""
-			}
-			println(o)
-			return strings.TrimPrefix(strings.TrimSuffix(o, "\""), "\"")
-		},
-		"GetModelOptions": func(n ast.Model) ast.Options {
-			return n.Options()
-		},
-		"GetModelOption": func(m ast.Model, optionName string) string {
-			o, ok := m.Options()[optionName]
-			if !ok {
-				return ""
-			}
-			println(o)
-			return strings.TrimPrefix(strings.TrimSuffix(o, "\""), "\"")
-		},
-		"ToUpper":     strings.ToUpper,
-		"ToKebabCase": utils.ToKebabCase,
-		"ToSnakeCase": utils.ToSnakeCase,
+		"Models":        func() ast.ModelMap { return models },
+		"GetModel":      func(modelName string) ast.Model { return *models[modelName] },
+		"GetNodeOption": ast.GetNodeOption,
+		"ToUpper":       strings.ToUpper,
+		"ToKebabCase":   utils.ToKebabCase,
+		"ToSnakeCase":   utils.ToSnakeCase,
 	}).Parse(buffer.String())
 	if err != nil {
 		panic(err)
@@ -102,12 +84,14 @@ func Generate(models ast.ModelMap, options GenerateConfig) ([]OutputFile, error)
 		deps = adapted.GetModelDeps(m.ModelName, deps)
 
 		writer := &strings.Builder{}
-		err = t.Execute(writer, struct {
+		err = t.Execute(writer, &struct {
 			Deps  []string
-			Model ast.Model
+			Root  *ast.RootNode
+			Model *ast.Model
 		}{
 			Deps:  deps,
-			Model: *m,
+			Root:  root,
+			Model: m,
 		})
 		if err != nil {
 			return nil, err

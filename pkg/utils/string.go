@@ -21,3 +21,10 @@ func ToKebabCase(str string) string {
 	snake = matchAllCap.ReplaceAllString(snake, "${1}-${2}")
 	return strings.ToLower(snake)
 }
+
+func UnwrapString(str, prefix, suffix string) (string, bool) {
+	if strings.HasPrefix(str, prefix) && strings.HasSuffix(str, suffix) {
+		return strings.TrimPrefix(strings.TrimSuffix(str, suffix), prefix), true
+	}
+	return str, false
+}
