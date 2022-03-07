@@ -60,7 +60,7 @@ func (models ModelMap) GetModelDeps(modelName string, deps []string) []string {
 
 	m, ok := models[modelName]
 	if !ok {
-		return nil
+		return make([]string, 0)
 	}
 
 	for _, p := range m.Props {
