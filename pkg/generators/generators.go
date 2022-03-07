@@ -42,8 +42,7 @@ func AdaptModel(models ast.ModelMap, typesMap TypesMap) ast.ModelMap {
 }
 
 func Generate(root *ast.RootNode, options GenerateConfig) ([]OutputFile, error) {
-	models := root.Models
-	adapted := AdaptModel(models, options.Types)
+	models := AdaptModel(root.Models, options.Types)
 	reader, err := os.Open(options.Template)
 	if err != nil {
 		err = fmt.Errorf("failed to open %s, err %v", options.Template, err)
@@ -56,41 +55,15 @@ func Generate(root *ast.RootNode, options GenerateConfig) ([]OutputFile, error) 
 	if _, err := buffer.ReadFrom(reader); err != nil {
 		return nil, err
 	}
-	t, err := template.New(options.Name).Funcs(template.FuncMap{
-		"HaveDefaultValue": func(p ast.ModelProp) bool { return p.DefaultValue != nil },
-		"PropDefaultValue": func(p ast.ModelProp) string {
-			if p.DefaultValue == nil {
-				return ""
-			}
-			if helper, ok := options.Helpers[*p.DefaultValue]; ok {
-				return helper
-			}
-			return *p.DefaultValue
-		},
-		"Models":   func() ast.ModelMap { return models },
-		"GetModel": func(modelName string) *ast.Model { return models[modelName] },
-		"GetModelDeps": func(modelName string) []*ast.Model {
-			deps := make([]*ast.Model, 0)
-			depsStr := adapted.GetModelDeps(modelName, nil)
-			for _, str := range depsStr {
-				m := models[str]
-				deps = append(deps, m)
-			}
-			return deps
-		},
-		"GetNodeOption": ast.GetNodeOption,
-		"ToUpper":       strings.ToUpper,
-		"ToKebabCase":   utils.ToKebabCase,
-		"ToSnakeCase":   utils.ToSnakeCase,
-	}).Parse(buffer.String())
+	t, err := template.New(options.Name).Funcs(templateHelpers(models, options)).Parse(buffer.String())
 	if err != nil {
 		panic(err)
 	}
 	files := make([]OutputFile, 0)
-	for _, m := range adapted {
+	for _, m := range models {
 		deps := make([]string, 0)
 
-		deps = adapted.GetModelDeps(m.ModelName, deps)
+		deps = models.GetModelDeps(m.ModelName, deps)
 
 		writer := &strings.Builder{}
 		err = t.Execute(writer, &struct {
