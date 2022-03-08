@@ -1,5 +1,5 @@
 {
-  "file": "schema.proto",
+  "file": "schema.yml",
   "generators": [
     {
       "name": "TS Models",

@@ -1,0 +1,17 @@
+Auxiliary:
+  id: int64
+  name: string
+  active: boolean
+  idUser: int64
+  userName: string
+
+AuxiliaryListFilter:
+  id:
+    type: int64
+    default: -1
+  active:
+    type: int32
+    default: -1
+  idUser:
+    type: int64
+    default: -1

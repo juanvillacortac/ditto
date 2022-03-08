@@ -1,17 +1,37 @@
 package proto
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
+	"os"
 	"strings"
 
 	"github.com/juanvillacortac/rosetta/pkg/ast"
 	"github.com/juanvillacortac/rosetta/pkg/types"
 	"github.com/juanvillacortac/rosetta/pkg/utils"
+
+	p_ "github.com/yoheimuta/go-protoparser/v4"
 	protoparser "github.com/yoheimuta/go-protoparser/v4/parser"
 )
 
-func GetRootNodeFromProto(program *protoparser.Proto) (*ast.RootNode, error) {
-	return GetRootNode(program)
+func GetRootNodeFromProto(reader io.Reader, config *ParseConfig) (*ast.RootNode, error) {
+	got, err := p_.Parse(
+		reader,
+		p_.WithDebug(config.Debug),
+		p_.WithPermissive(config.Debug),
+	)
+	if config.Debug {
+		gotJSON, err := json.MarshalIndent(got, "", "  ")
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "failed to marshal, err %v\n", err)
+		}
+		os.WriteFile("./.rosetta_proto_ast.json", gotJSON, os.ModePerm)
+	}
+	if err != nil {
+		return nil, fmt.Errorf("[Proto parsing error]: %v", err)
+	}
+	return GetRootNode(got)
 }
 
 func GetRootNode(program *protoparser.Proto) (*ast.RootNode, error) {

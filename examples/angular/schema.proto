@@ -5,24 +5,24 @@ package ejemplo;
 import "google/protobuf/descriptor.proto";
 
 extend google.protobuf.MessageOptions {
-  string table_name = 5001;
-  string sp_name = 5002;
+  required string table_name = 5001;
+  required string sp_name = 5002;
 }
 
 message Auxiliary {
-  int64 id = 1;
-  string name = 2;
-  boolean active = 3;
-  int64 idUser = 4;
-  string userName = 5;
+  required int64 id = 1;
+  required string name = 2;
+  required boolean active = 3;
+  required int64 idUser = 4;
+  required string userName = 5;
 }
 
 message AuxiliaryListFilter {
-  int64 id = 1 [default = -1];
-  int32 active = 3 [default = -1];
-  int64 idUser = 4 [default = -1];
+  required int64 id = 1 [default = -1];
+  required int32 active = 3 [default = -1];
+  required int64 idUser = 4 [default = -1];
 }
 
 message AuxiliaryFilter {
-  int64 id = 1;
+  required int64 id = 1;
 }

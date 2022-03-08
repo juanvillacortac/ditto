@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path"
 
 	"github.com/juanvillacortac/rosetta/pkg/ast"
 	"github.com/juanvillacortac/rosetta/pkg/generators"
 	"github.com/juanvillacortac/rosetta/pkg/parser/proto"
-
-	p_ "github.com/yoheimuta/go-protoparser/v4"
+	"github.com/juanvillacortac/rosetta/pkg/parser/yaml"
 )
 
 type Program struct {
@@ -49,23 +49,25 @@ func (p *Program) Parse(options ...Option) error {
 	}
 	defer reader.Close()
 
-	got, err := p_.Parse(
-		reader,
-		p_.WithDebug(config.debug),
-		p_.WithPermissive(config.debug),
-	)
-	if config.debug {
-		gotJSON, err := json.MarshalIndent(got, "", "  ")
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "failed to marshal, err %v\n", err)
-		}
-		os.WriteFile("./.rosetta_proto_ast.json", gotJSON, os.ModePerm)
-	}
-
 	if err != nil {
 		return fmt.Errorf("[Proto parsing error]: %v", err)
 	}
-	root, err := proto.GetRootNodeFromProto(got)
+	ext := path.Ext(reader.Name())
+	var root *ast.RootNode
+	switch ext {
+	case ".yml", ".yaml":
+		root, err = yaml.GetRootNodeFromYaml(reader)
+		if err != nil {
+			return fmt.Errorf("[Models parsing error]: %v", err)
+		}
+	case ".proto":
+		root, err = proto.GetRootNodeFromProto(reader, &proto.ParseConfig{
+			Debug:      config.debug,
+			Permissive: config.permissive,
+		})
+	default:
+		return fmt.Errorf("schema file extension not allowed")
+	}
 	if err != nil {
 		return fmt.Errorf("[Models parsing error]: %v", err)
 	}
@@ -75,6 +77,9 @@ func (p *Program) Parse(options ...Option) error {
 }
 
 func (p *Program) Generate() ([]generators.OutputFile, error) {
+	if p.root == nil {
+		return nil, fmt.Errorf("schema not loaded")
+	}
 	files := make([]generators.OutputFile, 0)
 	for i, g := range p.Generators {
 		fmt.Fprintf(os.Stdout, "[%d/%d] %s\n", i+1, len(p.Generators), g.Name)
