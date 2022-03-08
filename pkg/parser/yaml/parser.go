@@ -7,11 +7,11 @@ import (
 
 	"github.com/juanvillacortac/rosetta/pkg/ast"
 	"github.com/juanvillacortac/rosetta/pkg/utils"
-	"gopkg.in/yaml.v3"
+	"gopkg.in/yaml.v2"
 )
 
 func GetRootNodeFromYaml(reader io.Reader) (*ast.RootNode, error) {
-	var tree interface{}
+	var tree yaml.MapSlice
 	buffer := bytes.Buffer{}
 	if _, err := buffer.ReadFrom(reader); err != nil {
 		return nil, err
@@ -22,41 +22,46 @@ func GetRootNodeFromYaml(reader io.Reader) (*ast.RootNode, error) {
 	// bs, _ := json.MarshalIndent(&tree, "", "  ")
 	// println(string(bs))
 
-	t, ok := tree.(map[string]interface{})
-	if !ok {
-		return nil, fmt.Errorf("yaml schema must be a map")
-	}
+	// t, ok := tree.()
+	// if !ok {
+	// 	return nil, fmt.Errorf("yaml schema must be a map")
+	// }
 	root := &ast.RootNode{
 		RootOptions: make(ast.Options),
 		Models:      make(ast.ModelMap),
 	}
-	for key, val := range t {
-		switch val.(type) {
+	t := []yaml.MapItem{}
+	for _, item := range tree {
+		t = append(t, item)
+	}
+	for _, val := range t {
+		key := val.Key.(string)
+		switch val.Value.(type) {
 		case string:
 			o, isOption := utils.UnwrapString(key, "(", ")")
 			if isOption {
-				root.RootOptions[o] = val.(string)
+				root.RootOptions[o] = val.Value.(string)
 			}
-		case map[string]interface{}:
+		case yaml.MapSlice:
 			m := &ast.Model{
 				ModelName:    key,
 				Props:        make([]*ast.ModelProp, 0),
 				ModelOptions: make(ast.Options),
 			}
-			for key, prop := range val.(map[string]interface{}) {
-				switch prop.(type) {
+			for _, prop := range val.Value.(yaml.MapSlice) {
+				switch prop.Value.(type) {
 				case int:
-					val := prop.(int)
+					val := prop.Value.(int)
 					if o, isOption := utils.UnwrapString(key, "(", ")"); isOption {
 						m.ModelOptions[o] = fmt.Sprint(val)
 					}
 				case string:
-					val := prop.(string)
-					if o, isOption := utils.UnwrapString(key, "(", ")"); isOption {
+					val := prop.Value.(string)
+					if o, isOption := utils.UnwrapString(prop.Key.(string), "(", ")"); isOption {
 						m.ModelOptions[o] = val
 					} else {
 						p := &ast.ModelProp{
-							PropName:     key,
+							PropName:     prop.Key.(string),
 							IsRequired:   true,
 							IsArray:      false,
 							DefaultValue: nil,
@@ -66,7 +71,7 @@ func GetRootNodeFromYaml(reader io.Reader) (*ast.RootNode, error) {
 						m.Props = append(m.Props, p)
 					}
 				case map[string]interface{}:
-					val := prop.(map[string]interface{})
+					val := prop.Value.(map[string]interface{})
 					p := &ast.ModelProp{
 						PropName:    key,
 						IsRequired:  true,
