@@ -10,13 +10,27 @@ import (
 )
 
 var (
-	source     = flag.String("source", "", "path to the Protocol Buffer file")
-	debug      = flag.Bool("debug", false, "debug flag to output more parsing process detail")
-	permissive = flag.Bool("permissive", true, "permissive flag to allow the permissive parsing rather than the just documented spec")
+	version = "0.0.0"
+	commit  = "XXX"
+
+	source      = flag.String("source", "", "path to the Protocol Buffer file")
+	debug       = flag.Bool("debug", false, "debug flag to output more parsing process detail")
+	permissive  = flag.Bool("permissive", true, "permissive flag to allow the permissive parsing rather than the just documented spec")
+	showVersion = flag.Bool("v", false, "show version")
+	verbose     = flag.Bool("V", false, "Verbose output")
 )
 
 func run() int {
 	flag.Parse()
+
+	if *showVersion {
+		if *verbose {
+			fmt.Fprintf(os.Stdout, "Rosetta v%v - Commit hash %v\n", version, commit)
+		} else {
+			fmt.Fprintf(os.Stdout, "v%v\n", version)
+		}
+		return 1
+	}
 
 	if *source == "" {
 		fmt.Fprintf(os.Stderr, "You must provide a source \".json\" file\n")
