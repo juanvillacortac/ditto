@@ -8,8 +8,8 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/iancoleman/strcase"
 	"github.com/juanvillacortac/rosetta/pkg/ast"
-	"github.com/juanvillacortac/rosetta/pkg/utils"
 )
 
 type Generator func(root *ast.RootNode) ([]OutputFile, error)
@@ -78,9 +78,9 @@ func Generate(root *ast.RootNode, options GenerateConfig) ([]OutputFile, error) 
 			return nil, err
 		}
 		filename := strings.ReplaceAll(options.Output, "[model]", m.ModelName)
-		filename = strings.ReplaceAll(filename, "[Model]", strings.ToUpper(m.ModelName))
-		filename = strings.ReplaceAll(filename, "[model_]", utils.ToSnakeCase(m.ModelName))
-		filename = strings.ReplaceAll(filename, "[model-]", utils.ToKebabCase(m.ModelName))
+		filename = strings.ReplaceAll(filename, "[Model]", strcase.ToCamel(m.ModelName))
+		filename = strings.ReplaceAll(filename, "[model_]", strcase.ToSnake(m.ModelName))
+		filename = strings.ReplaceAll(filename, "[model-]", strcase.ToKebab(m.ModelName))
 		files = append(files, OutputFile{
 			Filename: filename,
 			Body:     writer.String(),

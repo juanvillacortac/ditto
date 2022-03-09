@@ -15,3 +15,12 @@ AuxiliaryListFilter:
   idUser:
     type: int64
     default: -1
+
+Vector:
+  x: int64
+  "y": int64
+
+Foo:
+  bar: Auxiliary
+  vectors:
+    type: Vector

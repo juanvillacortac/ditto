@@ -1,11 +1,10 @@
 package generators
 
 import (
-	"strings"
 	"text/template"
 
+	"github.com/iancoleman/strcase"
 	"github.com/juanvillacortac/rosetta/pkg/ast"
-	"github.com/juanvillacortac/rosetta/pkg/utils"
 )
 
 func templateHelpers(models ast.ModelMap, options GenerateConfig) template.FuncMap {
@@ -31,9 +30,10 @@ func templateHelpers(models ast.ModelMap, options GenerateConfig) template.FuncM
 			}
 			return deps
 		},
-		"GetNodeOption": ast.GetNodeOption,
-		"ToUpper":       strings.ToUpper,
-		"ToKebabCase":   utils.ToKebabCase,
-		"ToSnakeCase":   utils.ToSnakeCase,
+		"GetNodeOption":    ast.GetNodeOption,
+		"ToCamelCase":      strcase.ToCamel,
+		"ToLowerCamelCase": strcase.ToLowerCamel,
+		"ToKebabCase":      strcase.ToKebab,
+		"ToSnakeCase":      strcase.ToSnake,
 	}
 }

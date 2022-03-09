@@ -19,13 +19,6 @@ func GetRootNodeFromYaml(reader io.Reader) (*ast.RootNode, error) {
 	if err := yaml.Unmarshal(buffer.Bytes(), &tree); err != nil {
 		return nil, err
 	}
-	// bs, _ := json.MarshalIndent(&tree, "", "  ")
-	// println(string(bs))
-
-	// t, ok := tree.()
-	// if !ok {
-	// 	return nil, fmt.Errorf("yaml schema must be a map")
-	// }
 	root := &ast.RootNode{
 		RootOptions: make(ast.Options),
 		Models:      make(ast.ModelMap),
@@ -50,10 +43,10 @@ func GetRootNodeFromYaml(reader io.Reader) (*ast.RootNode, error) {
 			}
 			for _, prop := range val.Value.(yaml.MapSlice) {
 				switch prop.Value.(type) {
-				case int:
-					val := prop.Value.(int)
+				case int, float32, float64:
+					val := prop.Value
 					if o, isOption := utils.UnwrapString(key, "(", ")"); isOption {
-						m.ModelOptions[o] = fmt.Sprint(val)
+						m.ModelOptions[o] = fmt.Sprintf("%v", val)
 					}
 				case string:
 					val := prop.Value.(string)
@@ -70,37 +63,43 @@ func GetRootNodeFromYaml(reader io.Reader) (*ast.RootNode, error) {
 						}
 						m.Props = append(m.Props, p)
 					}
-				case map[string]interface{}:
-					val := prop.Value.(map[string]interface{})
+				case yaml.MapSlice:
+					val := prop.Value.(yaml.MapSlice)
 					p := &ast.ModelProp{
 						PropName:    key,
 						IsRequired:  true,
 						PropOptions: make(ast.Options),
 					}
-					for kP, meta := range val {
-						if o, isOption := utils.UnwrapString(kP, "(", ")"); isOption {
+					for _, meta := range val {
+						if o, isOption := utils.UnwrapString(meta.Key.(string), "(", ")"); isOption {
 							p.PropOptions[o] = fmt.Sprint(meta)
 						} else {
-							switch kP {
+							switch meta.Key.(string) {
 							case "default":
-								switch meta.(type) {
+								var str string
+								switch meta.Value.(type) {
 								case string:
 									str := fmt.Sprintf("\"%v\"", meta)
 									p.DefaultValue = &str
-								case int, float32, float64:
-									str := fmt.Sprintf("%d", meta)
-									p.DefaultValue = &str
+								case int, float32, float64, bool:
+									switch meta.Value.(type) {
+									case bool:
+										str = fmt.Sprintf("%v", meta)
+									default:
+										str = fmt.Sprintf("%d", meta)
+									}
 								}
+								p.DefaultValue = &str
 							case "array":
-								if v, ok := meta.(bool); ok {
+								if v, ok := meta.Value.(bool); ok {
 									p.IsArray = v
 								}
 							case "optional":
-								if v, ok := meta.(bool); ok {
+								if v, ok := meta.Value.(bool); ok {
 									p.IsRequired = !v
 								}
 							case "type":
-								if v, ok := meta.(string); ok {
+								if v, ok := meta.Value.(string); ok {
 									p.Type = v
 								} else {
 									return nil, fmt.Errorf("prop \"%v\" type value at model \"%v\" must be a string", p.PropName, m.ModelName)
@@ -114,8 +113,6 @@ func GetRootNodeFromYaml(reader io.Reader) (*ast.RootNode, error) {
 			root.Models[key] = m
 		}
 	}
-	// r, _ := json.MarshalIndent(root, "", "  ")
-	// println(string(r))
 
 	return root, nil
 }

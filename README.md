@@ -1,18 +1,17 @@
 # Rosetta
-An extensible CLI tool for generic code generation based in Protobuff source files (only for model scheming)
+An extensible CLI tool for generic code generation based in Protobuff and YAML source files
 
 ## Why?
 Because in my actual work we have a tedious developing workflow. We don't use ORMs and we adopt a "microservices" project structure try.
 I develop this tool for generate C# microservices, Angular models and services and SQLServer SPs based in a user given schema in a single shot.
-I adopted protobuffer because the lang have all I needed for this project, and I encountered parser for this.
 
 ## How this works?
 
 For generate code we need a ".json" source config with a estructure like:
 
-```json
+```jsonc
 {
-  "file": "schema.proto",
+  "file": "schema.proto", // or "schema.yml"
   "generators": [
     {
       "name": "TS Models",
@@ -82,6 +81,34 @@ message AuxiliaryListFilter {
 message AuxiliaryFilter {
   int64 id = 1;
 }
+```
+
+The YAML equivalent:
+```yaml
+Auxiliary:
+  id: int64
+  name: string
+  active: boolean
+  idUser: int64
+  userName: string
+
+AuxiliaryListFilter:
+  id: { type: int64, default: -1 }
+  active: { type: int32, default: -1 }
+  idUser: { type: int64, default: -1 }
+
+AuxiliaryFilter:
+  id: int64
+
+Vector:
+  x: int64
+  y: int64
+
+Foo:
+  bar: Auxiliary
+  vectors:
+    type: Vector
+    array: true
 ```
 
 And the templates are:
