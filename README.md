@@ -1,4 +1,4 @@
-# Rosetta
+# Rosetta ✨
 An extensible CLI tool for generic code generation based in Protobuff and YAML source files
 
 ## Why?
