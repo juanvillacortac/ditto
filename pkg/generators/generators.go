@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path"
 	"strings"
 	"text/template"
 
@@ -40,9 +41,9 @@ func AdaptModel(models ast.ModelMap, typesMap TypesMap) ast.ModelMap {
 	return clone
 }
 
-func Generate(root *ast.RootNode, options GenerateConfig) ([]OutputFile, error) {
+func Generate(schemaPath string, root *ast.RootNode, options GenerateConfig) ([]OutputFile, error) {
 	models := AdaptModel(root.Models, options.Types)
-	reader, err := os.Open(options.Template)
+	reader, err := os.Open(path.Join(schemaPath, options.Template))
 	if err != nil {
 		err = fmt.Errorf("failed to open %s, err %v", options.Template, err)
 		return nil, err

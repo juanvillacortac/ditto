@@ -11,7 +11,7 @@ For generate code we need a ".json" source config with a estructure like:
 
 ```jsonc
 {
-  "file": "schema.proto", // or "schema.yml"
+  "schema": "schema.proto", // or "schema.yml"
   "generators": [
     {
       "name": "TS Models",

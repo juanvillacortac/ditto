@@ -1,1 +1,1 @@
-go run ../.. -source source.json
+go run ../.. -c source.json

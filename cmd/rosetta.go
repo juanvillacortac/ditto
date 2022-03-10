@@ -13,7 +13,8 @@ var (
 	version = "0.0.0"
 	commit  = "XXX"
 
-	source      = flag.String("source", "", "path to the Protocol Buffer file")
+	source      = flag.String("c", "", "path to the config file (json or yaml)")
+	schema      = flag.String("s", "", "path to the schema file (overrides defined in json config file)")
 	debug       = flag.Bool("debug", false, "debug flag to output more parsing process detail")
 	permissive  = flag.Bool("permissive", true, "permissive flag to allow the permissive parsing rather than the just documented spec")
 	showVersion = flag.Bool("v", false, "show version")
@@ -45,11 +46,16 @@ func run() int {
 	}
 	defer reader.Close()
 
-	p, err := program.NewProgramFromJson(reader)
+	p, err := program.NewProgramFromConfigFile(reader)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return 1
 	}
+
+	if *schema != "" {
+		p.SchemaFile = *schema
+	}
+
 	if err := p.Parse(
 		program.WithDebug(*debug),
 		program.WithPermissive(*permissive),

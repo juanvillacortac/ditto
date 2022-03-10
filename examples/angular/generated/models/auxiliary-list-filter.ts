@@ -1,6 +1,6 @@
 
 export class AuxiliaryListFilter {
-  AuxiliaryListFilter: number = {%!d(string=default) -1}
-  AuxiliaryListFilter: number = {%!d(string=default) -1}
-  AuxiliaryListFilter: number = {%!d(string=default) -1}
+  id: number = -1
+  active: number = -1
+  idUser: number = -1
 }

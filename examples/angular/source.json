@@ -1,5 +1,5 @@
 {
-  "file": "schema.yml",
+  "schema": "schema.yml",
   "generators": [
     {
       "name": "TS Models",

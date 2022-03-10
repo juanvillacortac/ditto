@@ -66,7 +66,7 @@ func GetRootNodeFromYaml(reader io.Reader) (*ast.RootNode, error) {
 				case yaml.MapSlice:
 					val := prop.Value.(yaml.MapSlice)
 					p := &ast.ModelProp{
-						PropName:    key,
+						PropName:    prop.Key.(string),
 						IsRequired:  true,
 						PropOptions: make(ast.Options),
 					}
@@ -79,14 +79,13 @@ func GetRootNodeFromYaml(reader io.Reader) (*ast.RootNode, error) {
 								var str string
 								switch meta.Value.(type) {
 								case string:
-									str := fmt.Sprintf("\"%v\"", meta)
-									p.DefaultValue = &str
+									str = fmt.Sprintf("\"%v\"", meta.Value)
 								case int, float32, float64, bool:
 									switch meta.Value.(type) {
 									case bool:
-										str = fmt.Sprintf("%v", meta)
+										str = fmt.Sprintf("%v", meta.Value.(bool))
 									default:
-										str = fmt.Sprintf("%d", meta)
+										str = fmt.Sprintf("%d", meta.Value)
 									}
 								}
 								p.DefaultValue = &str
