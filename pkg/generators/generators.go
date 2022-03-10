@@ -15,14 +15,39 @@ import (
 
 type Generator func(root *ast.RootNode) ([]OutputFile, error)
 
-type TypesMap map[string]string
+type (
+	TypesMap    map[string]string
+	Definitions map[string]struct {
+		Types   map[string]string `json:"types"`
+		Helpers map[string]string `json:"helpers"`
+	}
+)
 
 type GenerateConfig struct {
-	Name     string            `json:"name"`
-	Template string            `json:"template"`
-	Output   string            `json:"output"`
-	Types    TypesMap          `json:"types"`
-	Helpers  map[string]string `json:"helpers"`
+	Name     string            `json:"name" yaml:"name"`
+	Template string            `json:"template" yaml:"template"`
+	Output   string            `json:"output" yaml:"output"`
+	From     string            `json:"from" yaml:"from"`
+	Types    map[string]string `json:"types" yaml:"types"`
+	Helpers  map[string]string `json:"helpers" yaml:"helpers"`
+}
+
+func (g GenerateConfig) ApplyDefinitions(definitions Definitions) GenerateConfig {
+	clone := g
+	if g.From == "" {
+		return g
+	}
+	if len(clone.Types) == 0 {
+		if t, ok := definitions[clone.From]; ok {
+			clone.Types = t.Types
+		}
+	}
+	if len(clone.Helpers) == 0 {
+		if t, ok := definitions[clone.From]; ok {
+			clone.Helpers = t.Helpers
+		}
+	}
+	return clone
 }
 
 func AdaptModel(models ast.ModelMap, typesMap TypesMap) ast.ModelMap {

@@ -1,9 +1,7 @@
 schema: schema.yml
 
-generators:
-  - name: TS Models
-    template: templates/model.ts.go.tpl
-    output: generated/models/[model-].ts
+definitions:
+  ts:
     types:
       int32: number
       int64: number
@@ -13,6 +11,12 @@ generators:
       date: Date
     helpers:
       '"now()"': new Date()
+
+generators:
+  - name: TS Models
+    template: templates/model.ts.go.tpl
+    output: generated/models/[model-].ts
+    from: ts
 
   - name: TS Service
     template: templates/service.ts.go.tpl

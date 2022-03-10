@@ -17,8 +17,9 @@ import (
 )
 
 type Program struct {
-	SchemaFile string                      `json:"schema" yaml:"schema"`
-	Generators []generators.GenerateConfig `json:"generators"`
+	Definitions generators.Definitions      `json:"definitions" yaml:"definitions"`
+	SchemaFile  string                      `json:"schema" yaml:"schema"`
+	Generators  []generators.GenerateConfig `json:"generators"`
 
 	root *ast.RootNode
 }
@@ -95,8 +96,9 @@ func (p *Program) Generate(verbose bool) ([]generators.OutputFile, error) {
 	schemaPath, _ := filepath.Abs(path.Dir(p.SchemaFile))
 	files := make([]generators.OutputFile, 0)
 	for i, g := range p.Generators {
+		gApplied := g.ApplyDefinitions(p.Definitions)
 		fmt.Fprintf(os.Stdout, "[%d/%d] %s\n", i+1, len(p.Generators), g.Name)
-		fs, err := generators.Generate(schemaPath, p.root, g, verbose)
+		fs, err := generators.Generate(schemaPath, p.root, gApplied, verbose)
 		if err != nil {
 			return nil, err
 		}
