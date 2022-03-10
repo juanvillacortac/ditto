@@ -60,7 +60,9 @@ func Generate(schemaPath string, root *ast.RootNode, options GenerateConfig) ([]
 		panic(err)
 	}
 	files := make([]OutputFile, 0)
+	cnt := 0
 	for _, m := range models {
+		fmt.Fprintf(os.Stdout, "-> [%d/%d] Generating \"%s\"\n", cnt+1, len(models), m.Name())
 		deps := make([]string, 0)
 
 		deps = models.GetModelDeps(m.ModelName, deps)
@@ -86,6 +88,7 @@ func Generate(schemaPath string, root *ast.RootNode, options GenerateConfig) ([]
 			Filename: filename,
 			Body:     writer.String(),
 		})
+		cnt++
 	}
 	return files, nil
 }
