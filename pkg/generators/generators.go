@@ -41,7 +41,7 @@ func AdaptModel(models ast.ModelMap, typesMap TypesMap) ast.ModelMap {
 	return clone
 }
 
-func Generate(schemaPath string, root *ast.RootNode, options GenerateConfig) ([]OutputFile, error) {
+func Generate(schemaPath string, root *ast.RootNode, options GenerateConfig, verbose bool) ([]OutputFile, error) {
 	models := AdaptModel(root.Models, options.Types)
 	reader, err := os.Open(path.Join(schemaPath, options.Template))
 	if err != nil {
@@ -62,7 +62,9 @@ func Generate(schemaPath string, root *ast.RootNode, options GenerateConfig) ([]
 	files := make([]OutputFile, 0)
 	cnt := 0
 	for _, m := range models {
-		fmt.Fprintf(os.Stdout, "-> [%d/%d] Generating \"%s\"\n", cnt+1, len(models), m.Name())
+		if verbose {
+			fmt.Fprintf(os.Stdout, "-> [%d/%d] Generating \"%s\"\n", cnt+1, len(models), m.Name())
+		}
 		deps := make([]string, 0)
 
 		deps = models.GetModelDeps(m.ModelName, deps)

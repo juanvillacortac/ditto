@@ -72,7 +72,7 @@ func GetRootNodeFromYaml(reader io.Reader) (*ast.RootNode, error) {
 					}
 					for _, meta := range val {
 						if o, isOption := utils.UnwrapString(meta.Key.(string), "(", ")"); isOption {
-							p.PropOptions[o] = fmt.Sprint(meta)
+							p.PropOptions[o] = fmt.Sprint(meta.Value)
 						} else {
 							switch meta.Key.(string) {
 							case "default":

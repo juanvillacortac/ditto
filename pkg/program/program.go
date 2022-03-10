@@ -88,7 +88,7 @@ func (p *Program) Parse(options ...Option) error {
 	return nil
 }
 
-func (p *Program) Generate() ([]generators.OutputFile, error) {
+func (p *Program) Generate(verbose bool) ([]generators.OutputFile, error) {
 	if p.root == nil {
 		return nil, fmt.Errorf("schema not loaded")
 	}
@@ -96,7 +96,7 @@ func (p *Program) Generate() ([]generators.OutputFile, error) {
 	files := make([]generators.OutputFile, 0)
 	for i, g := range p.Generators {
 		fmt.Fprintf(os.Stdout, "[%d/%d] %s\n", i+1, len(p.Generators), g.Name)
-		fs, err := generators.Generate(schemaPath, p.root, g)
+		fs, err := generators.Generate(schemaPath, p.root, g, verbose)
 		if err != nil {
 			return nil, err
 		}

@@ -59,7 +59,7 @@ func run() int {
 		return 1
 	}
 
-	files, err := p.Generate()
+	files, err := p.Generate(*verbose)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return 1
