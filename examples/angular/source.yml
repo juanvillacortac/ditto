@@ -1,5 +1,3 @@
-schema: schema.yml
-
 definitions:
   ts:
     types:
@@ -21,12 +19,4 @@ generators:
   - name: TS Service
     template: templates/service.ts.go.tpl
     output: generated/services/[model-].service.ts
-    types:
-      int32: number
-      int64: number
-      double: number
-      boolean: boolean
-      string: string
-      date: Date
-    helpers:
-      '"now()"': new Date()
+    from: ts

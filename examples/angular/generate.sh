@@ -1,1 +1,1 @@
-go run ../.. -c source.json
+go run ../.. -c source.yml
