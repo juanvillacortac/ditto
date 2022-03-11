@@ -1,3 +1,5 @@
+output: generated
+
 definitions:
   ts:
     types:
@@ -13,10 +15,10 @@ definitions:
 generators:
   - name: TS Models
     template: templates/model.ts.go.tpl
-    output: generated/models/[model-].ts
+    output: models/[model-].ts
     from: ts
 
   - name: TS Service
     template: templates/service.ts.go.tpl
-    output: generated/services/[model-].service.ts
+    output: services/[model-].service.ts
     from: ts

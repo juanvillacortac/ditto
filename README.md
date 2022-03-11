@@ -1,4 +1,7 @@
 # Rosetta ✨
+
+[![GoDoc](https://godoc.org/github.com/juanvillacortac/rosetta?status.svg)](https://godoc.org/github.com/juanvillacortac/rosetta)
+
 An extensible CLI tool for generic code generation based in Protobuff and YAML source files
 
 ## Why?

@@ -14,7 +14,8 @@ var (
 	commit  = "XXX"
 
 	config      = flag.String("c", "config.yml", "path to the config file (json or yaml)")
-	schema      = flag.String("s", "schema.yml", "path to the schema file (overrides defined in json config file)")
+	output      = flag.String("o", "", "path to the output base path")
+	schema      = flag.String("s", "", "path to the schema file (overrides defined in json config file) (default \"schema.yml\" if not defined in config)")
 	showVersion = flag.Bool("v", false, "show version")
 	verbose     = flag.Bool("V", false, "Verbose output")
 )
@@ -52,6 +53,12 @@ func run() int {
 
 	if *schema != "" {
 		p.SchemaFile = *schema
+	} else if p.SchemaFile == "" {
+		p.SchemaFile = "schema.yml"
+	}
+
+	if *output != "" {
+		p.OutputBasePath = *output
 	}
 
 	if err := p.Parse(); err != nil {

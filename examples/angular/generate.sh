@@ -1,1 +1,1 @@
-go run ../.. -c source.yml
+go run ../..

@@ -16,21 +16,22 @@ import (
 	y "gopkg.in/yaml.v2"
 )
 
-type Program struct {
-	Definitions generators.Definitions      `json:"definitions" yaml:"definitions"`
-	SchemaFile  string                      `json:"schema" yaml:"schema"`
-	Generators  []generators.GenerateConfig `json:"generators"`
+type ProgramConfig struct {
+	Definitions    generators.Definitions      `json:"definitions" yaml:"definitions"`
+	SchemaFile     string                      `json:"schema" yaml:"schema"`
+	OutputBasePath string                      `json:"output" yaml:"output"`
+	Generators     []generators.GenerateConfig `json:"generators"`
 
 	root *ast.RootNode
 }
 
-func NewProgramFromConfigFile(reader *os.File) (*Program, error) {
+func NewProgramFromConfigFile(reader *os.File) (*ProgramConfig, error) {
 	buffer := bytes.Buffer{}
 	buffer.ReadFrom(reader)
 	if _, err := buffer.ReadFrom(reader); err != nil {
 		return nil, err
 	}
-	p := &Program{}
+	p := &ProgramConfig{}
 	ext := path.Ext(reader.Name())
 	switch ext {
 	case ".yml", ".yaml":
@@ -47,14 +48,7 @@ func NewProgramFromConfigFile(reader *os.File) (*Program, error) {
 	return p, nil
 }
 
-func (p *Program) Parse(options ...Option) error {
-	config := &ParseConfig{
-		permissive: true,
-	}
-	for _, opt := range options {
-		opt(config)
-	}
-
+func (p *ProgramConfig) Parse() error {
 	reader, err := os.Open(p.SchemaFile)
 	if err != nil {
 		err = fmt.Errorf("failed to open %s, err %v", p.SchemaFile, err)
@@ -74,10 +68,7 @@ func (p *Program) Parse(options ...Option) error {
 			return fmt.Errorf("[Models parsing error]: %v", err)
 		}
 	case ".proto":
-		root, err = proto.GetRootNodeFromProto(reader, &proto.ParseConfig{
-			Debug:      config.debug,
-			Permissive: config.permissive,
-		})
+		root, err = proto.GetRootNodeFromProto(reader)
 	default:
 		return fmt.Errorf("schema file extension not allowed")
 	}
@@ -89,7 +80,7 @@ func (p *Program) Parse(options ...Option) error {
 	return nil
 }
 
-func (p *Program) Generate(verbose bool) ([]generators.OutputFile, error) {
+func (p *ProgramConfig) Generate(verbose bool) ([]generators.OutputFile, error) {
 	if p.root == nil {
 		return nil, fmt.Errorf("schema not loaded")
 	}
@@ -101,6 +92,10 @@ func (p *Program) Generate(verbose bool) ([]generators.OutputFile, error) {
 		fs, err := generators.Generate(schemaPath, p.root, gApplied, verbose)
 		if err != nil {
 			return nil, err
+		}
+		for i := range fs {
+			f := &fs[i]
+			f.Filename = path.Join(p.OutputBasePath, f.Filename)
 		}
 		files = append(files, fs...)
 	}
