@@ -1,21 +1,21 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { {{ .Model.ModelName }} } from "../models/{{ .Model.ModelName | ToKebabCase }}";
-import { {{ .Model.ModelName }}ListFilter } from "../models/{{ .Model.ModelName | ToKebabCase }}-list-filter";
-import { {{ .Model.ModelName }}Filter } from "../models/{{ .Model.ModelName | ToKebabCase }}-filter";
+import { {{ .Model.Name }} } from "../models/{{ .Model.Name | KebabCase }}";
+import { {{ .Model.Name }}ListFilter } from "../models/{{ .Model.Name | KebabCase }}-list-filter";
+import { {{ .Model.Name }}Filter } from "../models/{{ .Model.Name | KebabCase }}-filter";
 
 @Injectable({
   providedIn: "root",
 })
-export class {{ .Model.ModelName }}Service {
+export class {{ .Model.Name }}Service {
   constructor(
     private _httpClient: HttpClient,
     private _httpHelpersService: HttpHelpersService
   ) {}
 
-  get{{ .Model.ModelName }}List(filter: {{ .Model.ModelName }}ListFilter) {
-    return this._httpClient.get<{{ .Model.ModelName }}[]>(
-      `/{{ .Model.ModelName }}/list`,
+  get{{ .Model.Name }}List(filter: {{ .Model.Name }}ListFilter) {
+    return this._httpClient.get<{{ .Model.Name }}[]>(
+      `/{{ .Model.Name }}/list`,
       {
         params: this._httpHelpersService.getHttpParamsFromPlainObject(
           filter,
@@ -25,9 +25,9 @@ export class {{ .Model.ModelName }}Service {
     );
   }
 
-  get{{ .Model.ModelName }}(filter: {{ .Model.ModelName }}Filter) {
-    return this._httpClient.get<{{ .Model.ModelName }}>(
-      `/{{ .Model.ModelName }}/`,
+  get{{ .Model.Name }}(filter: {{ .Model.Name }}Filter) {
+    return this._httpClient.get<{{ .Model.Name }}>(
+      `/{{ .Model.Name }}/`,
       {
         params: this._httpHelpersService.getHttpParamsFromPlainObject(
           filter,
@@ -37,7 +37,7 @@ export class {{ .Model.ModelName }}Service {
     );
   }
 
-  post{{ .Model.ModelName }}(model: {{ .Model.ModelName }}) {
-    return this._httpClient.post<number>(`/{{ .Model.ModelName }}/`, model);
+  post{{ .Model.Name }}(model: {{ .Model.Name }}) {
+    return this._httpClient.post<number>(`/{{ .Model.Name }}/`, model);
   }
 }

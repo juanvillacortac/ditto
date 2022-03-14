@@ -1,1 +1,1 @@
-go run ../..
+go run ../.. -c config.yml

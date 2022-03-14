@@ -1,8 +1,8 @@
-{{- range $key, $dep := .Deps -}}
-import { {{ $dep }} } from './{{ $dep | ToKebabCase }}'
+{{- range $key, $dep := ModelDeps .Model -}}
+import { {{ $dep.Name }} } from './{{ $dep.Name | KebabCase }}'
 {{ end }}
 export class {{ .Model.Name }} {
   {{- range .Model.Props}}
-  {{ .Name }}: {{ .Type }}{{ if .IsArray }}[]{{ end }}{{ if HaveDefaultValue . }} = {{ PropDefaultValue . }}{{ end }}
+  {{ .Name }}: {{ .Type }}{{ if .IsArray }}[]{{ end }}{{ if .DefaultValue }} = {{ .DefaultValue }}{{ end }}
   {{- end }}
 }

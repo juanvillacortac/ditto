@@ -51,33 +51,38 @@ func (m *ModelProp) Options() Options { return m.PropOptions }
 
 type ModelMap map[string]*Model
 
-func (models ModelMap) GetModelDeps(modelName string, deps []string) []string {
-	if deps == nil {
-		deps = make([]string, 0)
+func (models ModelMap) ModelDependencies(model interface{}) []*Model {
+	deps := make([]*Model, 0)
+
+	var modelName string
+	if m, ok := model.(*Model); ok {
+		modelName = m.ModelName
+	} else if m, ok := model.(string); ok {
+		modelName = m
+	} else {
+		return deps
 	}
-	clone := make([]string, len(deps))
-	copy(clone, deps)
 
 	m, ok := models[modelName]
 	if !ok {
-		return make([]string, 0)
+		return make([]*Model, 0)
 	}
 
 	for _, p := range m.Props {
 		if mm, ok := models[string(p.Type)]; ok {
 			ok := false
-			for _, d := range clone {
-				if d == mm.ModelName {
+			for _, d := range deps {
+				if d.ModelName == mm.ModelName {
 					ok = true
 					break
 				}
 			}
 			if !ok {
-				clone = append(clone, mm.ModelName)
+				deps = append(deps, mm)
 			}
 		}
 	}
-	return clone
+	return deps
 }
 
 func GetNodeOption(r Node, optionName string) string {

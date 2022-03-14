@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path"
 	"path/filepath"
 
 	"github.com/juanvillacortac/rosetta/pkg/program"
@@ -66,7 +67,8 @@ func run() int {
 		return 1
 	}
 
-	files, err := p.Generate(*verbose)
+	basePath, _ := filepath.Abs(path.Dir(*config))
+	files, err := p.Generate(basePath, *verbose)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return 1
