@@ -89,6 +89,11 @@ func GetRootNodeFromYaml(reader io.Reader) (*ast.RootNode, error) {
 									}
 								}
 								p.DefaultValue = &str
+							case "pk":
+								switch meta.Value.(type) {
+								case bool:
+									p.PK = meta.Value.(bool)
+								}
 							case "array":
 								if v, ok := meta.Value.(bool); ok {
 									p.IsArray = v

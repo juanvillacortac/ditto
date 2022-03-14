@@ -28,7 +28,16 @@ type Model struct {
 func (m *Model) Name() string     { return m.ModelName }
 func (m *Model) Options() Options { return m.ModelOptions }
 
-func (m *Model) GetProp(propName string) *ModelProp {
+func (m *Model) PKProp() *ModelProp {
+	for _, p := range m.Props {
+		if p.PK {
+			return p
+		}
+	}
+	return nil
+}
+
+func (m *Model) Prop(propName string) *ModelProp {
 	for _, p := range m.Props {
 		if p.PropName == propName {
 			return p
@@ -41,6 +50,7 @@ type ModelProp struct {
 	PropName     string
 	IsRequired   bool
 	IsArray      bool
+	PK           bool
 	DefaultValue *string
 	Type         string
 	PropOptions  Options

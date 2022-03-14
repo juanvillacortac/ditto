@@ -125,7 +125,10 @@ func (p *ProgramConfig) Generate(relativePath string, verbose bool) ([]generator
 		return nil, fmt.Errorf("schema not loaded")
 	}
 	files := make([]generators.OutputFile, 0)
-	configs, _ := p.LoadGenerateConfigsWithTemplates(relativePath)
+	configs, err := p.LoadGenerateConfigsWithTemplates(relativePath)
+	if err != nil {
+		return nil, err
+	}
 	for i, g := range configs {
 		fmt.Fprintf(os.Stdout, "[%d/%d] %s\n", i+1, len(configs), g.Name)
 		fs, err := generators.Generate(p.root, g, verbose)

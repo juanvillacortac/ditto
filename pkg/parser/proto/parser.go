@@ -44,10 +44,13 @@ func GetRootNode(program *protoparser.Proto) (*ast.RootNode, error) {
 			case *protoparser.Field:
 				f := mb.(*protoparser.Field)
 				var def *string
+				pk := false
 				options := make(ast.Options)
 				for _, o := range f.FieldOptions {
 					if o.OptionName == "default" {
 						def = &o.Constant
+					} else if o.OptionName == "pk" {
+						pk = o.Constant == "true"
 					}
 					if strings.HasPrefix(o.OptionName, "(") && strings.HasSuffix(o.OptionName, ")") {
 						name := strings.TrimPrefix(strings.TrimSuffix(o.OptionName, ")"), "(")
@@ -56,6 +59,7 @@ func GetRootNode(program *protoparser.Proto) (*ast.RootNode, error) {
 				}
 				prop := &ast.ModelProp{
 					PropName:     f.FieldName,
+					PK:           pk,
 					IsRequired:   f.IsRequired,
 					IsArray:      f.IsRepeated,
 					Type:         f.Type,

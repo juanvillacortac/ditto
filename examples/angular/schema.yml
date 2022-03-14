@@ -1,5 +1,7 @@
 Auxiliary:
-  id: int64
+  id:
+    type: int64
+    pk: true
   name: string
   active: boolean
   idUser: int64
