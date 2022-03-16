@@ -7,10 +7,9 @@ Auxiliary:
   idUser: int64
   userName: string
   # OPTIONS
-  (list-filter): AuxiliaryListFilter
   (filter): AuxiliaryFilter
 
-AuxiliaryListFilter:
+AuxiliaryFilter:
   id:
     type: int64
     default: -1
@@ -23,11 +22,6 @@ AuxiliaryListFilter:
   # OPTIONS
   (service_ignore): true
 
-AuxiliaryFilter:
-  id: { type: int64, pk: true }
-  # OPTIONS
-  (service_ignore): true
-
 Vector:
   x: int64
   "y": int64
@@ -36,3 +30,4 @@ Foo:
   bar: Auxiliary
   vectors:
     type: Vector
+    array: true

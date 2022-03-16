@@ -1,7 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Auxiliary } from "../models/auxiliary";
-import { AuxiliaryListFilter } from "../models/auxiliary-list-filter";
 import { AuxiliaryFilter } from "../models/auxiliary-filter";
 
 @Injectable({
@@ -12,7 +11,7 @@ export class AuxiliaryService {
     private _httpClient: HttpClient,
     private _httpHelpersService: HttpHelpersService
   ) {}
-  getAuxiliaries(filter: AuxiliaryListFilter) {
+  getAuxiliaries(filter: AuxiliaryFilter) {
     return this._httpClient.get<Auxiliary[]>(
       '/auxiliaries',
       {
@@ -24,8 +23,7 @@ export class AuxiliaryService {
     );
   }
   
-  getAuxiliary(filter: AuxiliaryFilter) {
-    const { id } = filter
+  getAuxiliary(id: number) {
     return this._httpClient.get<Auxiliary>(`/auxiliaries/${id}`);
   }
   

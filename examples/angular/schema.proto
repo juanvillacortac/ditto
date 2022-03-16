@@ -10,7 +10,8 @@ extend google.protobuf.MessageOptions {
 }
 
 message Auxiliary {
-  required int64 id = 1;
+  option (filter) = "AuxiliaryFilter";
+  required int64 id = 1 [pk = true];
   required string name = 2;
   required boolean active = 3;
   required int64 idUser = 4;
@@ -18,11 +19,13 @@ message Auxiliary {
 }
 
 message AuxiliaryListFilter {
+  option (service_ignore) = true;
   required int64 id = 1 [default = -1];
   required int32 active = 3 [default = -1];
   required int64 idUser = 4 [default = -1];
 }
 
 message AuxiliaryFilter {
-  required int64 id = 1;
+  option (service_ignore) = true;
+  required int64 id = 1 [pk = true];
 }

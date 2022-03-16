@@ -3,5 +3,5 @@ import { Vector } from './vector'
 
 export class Foo {
   bar: Auxiliary
-  vectors: Vector
+  vectors: Vector[]
 }
