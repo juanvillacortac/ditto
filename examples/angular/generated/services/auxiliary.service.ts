@@ -12,10 +12,9 @@ export class AuxiliaryService {
     private _httpClient: HttpClient,
     private _httpHelpersService: HttpHelpersService
   ) {}
-
-  getAuxiliaryList(filter: AuxiliaryListFilter) {
+  getAuxiliaries(filter: AuxiliaryListFilter) {
     return this._httpClient.get<Auxiliary[]>(
-      `/Auxiliary/list`,
+      '/auxiliaries',
       {
         params: this._httpHelpersService.getHttpParamsFromPlainObject(
           filter,
@@ -24,20 +23,13 @@ export class AuxiliaryService {
       }
     );
   }
-
+  
   getAuxiliary(filter: AuxiliaryFilter) {
-    return this._httpClient.get<Auxiliary>(
-      `/Auxiliary/`,
-      {
-        params: this._httpHelpersService.getHttpParamsFromPlainObject(
-          filter,
-          false
-        ),
-      }
-    );
+    const { id } = filter
+    return this._httpClient.get<Auxiliary>(`/auxiliaries/${id}`);
   }
-
+  
   postAuxiliary(model: Auxiliary) {
-    return this._httpClient.post<number>(`/Auxiliary/`, model);
+    return this._httpClient.post<number>('/auxiliaries', model);
   }
 }

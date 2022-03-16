@@ -14,11 +14,13 @@ definitions:
 
 generators:
   - name: TS Models
+    ignore: model_ignore
     template: templates/model.ts.go.tpl
     output: models/[model-].ts
     from: ts
 
   - name: TS Service
+    ignore: service_ignore
     template: templates/service.ts.go.tpl
     output: services/[model-].service.ts
     from: ts

@@ -29,6 +29,7 @@ type GenerateConfig struct {
 	Name     string `json:"name" yaml:"name"`
 	Template string `json:"template,omitempty" yaml:"template,omitempty"`
 	Output   string `json:"output" yaml:"output"`
+	Ignore   string `json:"ignore" yaml:"ignore"`
 
 	From    string            `json:"from" yaml:"from"`
 	Types   map[string]string `json:"types" yaml:"types"`
@@ -86,6 +87,9 @@ func Generate(root *ast.RootNode, config GenerateConfig, verbose bool) ([]Output
 	files := make([]OutputFile, 0)
 	cnt := 0
 	for _, m := range models {
+		if val, ok := m.ModelOptions[config.Ignore]; ok && val == "true" {
+			continue
+		}
 		if verbose {
 			fmt.Fprintf(os.Stdout, "-> [%d/%d] Generating \"%s\"\n", cnt+1, len(models), m.Name())
 		}

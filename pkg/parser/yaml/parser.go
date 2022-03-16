@@ -30,10 +30,10 @@ func GetRootNodeFromYaml(reader io.Reader) (*ast.RootNode, error) {
 	for _, val := range t {
 		key := val.Key.(string)
 		switch val.Value.(type) {
-		case string:
+		default:
 			o, isOption := utils.UnwrapString(key, "(", ")")
 			if isOption {
-				root.RootOptions[o] = val.Value.(string)
+				root.RootOptions[o] = fmt.Sprintf("%v", val.Value)
 			}
 		case yaml.MapSlice:
 			m := &ast.Model{
@@ -42,17 +42,12 @@ func GetRootNodeFromYaml(reader io.Reader) (*ast.RootNode, error) {
 				ModelOptions: make(ast.Options),
 			}
 			for _, prop := range val.Value.(yaml.MapSlice) {
-				switch prop.Value.(type) {
-				case int, float32, float64:
-					val := prop.Value
-					if o, isOption := utils.UnwrapString(key, "(", ")"); isOption {
-						m.ModelOptions[o] = fmt.Sprintf("%v", val)
-					}
-				case string:
-					val := prop.Value.(string)
-					if o, isOption := utils.UnwrapString(prop.Key.(string), "(", ")"); isOption {
-						m.ModelOptions[o] = val
-					} else {
+				if o, isOption := utils.UnwrapString(prop.Key.(string), "(", ")"); isOption {
+					m.ModelOptions[o] = fmt.Sprint(prop.Value)
+				} else {
+					switch prop.Value.(type) {
+					case string:
+						val := prop.Value.(string)
 						p := &ast.ModelProp{
 							PropName:     prop.Key.(string),
 							IsRequired:   true,
@@ -62,56 +57,51 @@ func GetRootNodeFromYaml(reader io.Reader) (*ast.RootNode, error) {
 							PropOptions:  make(ast.Options),
 						}
 						m.Props = append(m.Props, p)
-					}
-				case yaml.MapSlice:
-					val := prop.Value.(yaml.MapSlice)
-					p := &ast.ModelProp{
-						PropName:    prop.Key.(string),
-						IsRequired:  true,
-						PropOptions: make(ast.Options),
-					}
-					for _, meta := range val {
-						if o, isOption := utils.UnwrapString(meta.Key.(string), "(", ")"); isOption {
-							p.PropOptions[o] = fmt.Sprint(meta.Value)
-						} else {
-							switch meta.Key.(string) {
-							case "default":
-								var str string
-								switch meta.Value.(type) {
-								case string:
-									str = fmt.Sprintf("\"%v\"", meta.Value)
-								case int, float32, float64, bool:
+					case yaml.MapSlice:
+						val := prop.Value.(yaml.MapSlice)
+						p := &ast.ModelProp{
+							PropName:    prop.Key.(string),
+							IsRequired:  true,
+							PropOptions: make(ast.Options),
+						}
+						for _, meta := range val {
+							if o, isOption := utils.UnwrapString(meta.Key.(string), "(", ")"); isOption {
+								p.PropOptions[o] = fmt.Sprint(meta.Value)
+							} else {
+								switch meta.Key.(string) {
+								case "default":
+									var str string
+									switch meta.Value.(type) {
+									case string:
+										str = fmt.Sprintf("\"%v\"", meta.Value)
+									default:
+										str = fmt.Sprint(meta.Value)
+									}
+									p.DefaultValue = &str
+								case "pk":
 									switch meta.Value.(type) {
 									case bool:
-										str = fmt.Sprintf("%v", meta.Value.(bool))
-									default:
-										str = fmt.Sprintf("%d", meta.Value)
+										p.PK = meta.Value.(bool)
 									}
-								}
-								p.DefaultValue = &str
-							case "pk":
-								switch meta.Value.(type) {
-								case bool:
-									p.PK = meta.Value.(bool)
-								}
-							case "array":
-								if v, ok := meta.Value.(bool); ok {
-									p.IsArray = v
-								}
-							case "optional":
-								if v, ok := meta.Value.(bool); ok {
-									p.IsRequired = !v
-								}
-							case "type":
-								if v, ok := meta.Value.(string); ok {
-									p.Type = v
-								} else {
-									return nil, fmt.Errorf("prop \"%v\" type value at model \"%v\" must be a string", p.PropName, m.ModelName)
+								case "array":
+									if v, ok := meta.Value.(bool); ok {
+										p.IsArray = v
+									}
+								case "optional":
+									if v, ok := meta.Value.(bool); ok {
+										p.IsRequired = !v
+									}
+								case "type":
+									if v, ok := meta.Value.(string); ok {
+										p.Type = v
+									} else {
+										return nil, fmt.Errorf("prop \"%v\" type value at model \"%v\" must be a string", p.PropName, m.ModelName)
+									}
 								}
 							}
 						}
+						m.Props = append(m.Props, p)
 					}
-					m.Props = append(m.Props, p)
 				}
 			}
 			root.Models[key] = m

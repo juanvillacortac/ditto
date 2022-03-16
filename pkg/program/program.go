@@ -28,6 +28,7 @@ type GenerateConfig struct {
 	Name     string `json:"name" yaml:"name"`
 	Template string `json:"template" yaml:"template"`
 	Output   string `json:"output" yaml:"output"`
+	Ignore   string `json:"ignore" yaml:"ignore"`
 
 	From    string            `json:"from" yaml:"from"`
 	Types   map[string]string `json:"types" yaml:"types"`
@@ -71,6 +72,23 @@ func (p *ProgramConfig) Parse() error {
 	ext := path.Ext(reader.Name())
 	var root *ast.RootNode
 	switch ext {
+	case ".json":
+		var s interface{}
+		buff := bytes.Buffer{}
+		if _, err := buff.ReadFrom(reader); err != nil {
+			return fmt.Errorf("[Models parsing error]: %v", err)
+		}
+		if err := json.Unmarshal(buff.Bytes(), &s); err != nil {
+			return fmt.Errorf("[Models parsing error]: %v", err)
+		}
+		b, err := y.Marshal(s)
+		if err != nil {
+			return fmt.Errorf("[Models parsing error]: %v", err)
+		}
+		root, err = yaml.GetRootNodeFromYaml(bytes.NewReader(b))
+		if err != nil {
+			return fmt.Errorf("[Models parsing error]: %v", err)
+		}
 	case ".yml", ".yaml":
 		root, err = yaml.GetRootNodeFromYaml(reader)
 		if err != nil {
@@ -109,6 +127,7 @@ func (p *ProgramConfig) LoadGenerateConfigsWithTemplates(relativePath string) ([
 			Name:     g.Name,
 			Template: buffer.String(),
 			Output:   g.Output,
+			Ignore:   g.Ignore,
 			From:     g.From,
 			Types:    g.Types,
 			Helpers:  g.Helpers,

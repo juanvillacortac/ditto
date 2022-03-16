@@ -95,10 +95,12 @@ func (models ModelMap) ModelDependencies(model interface{}) []*Model {
 	return deps
 }
 
-func GetNodeOption(r Node, optionName string) string {
+func GetNodeOption(r Node, optionName string) *string {
 	o, ok := r.Options()[optionName]
 	if !ok {
-		return ""
+		return nil
+	} else {
+		o = strings.TrimPrefix(strings.TrimSuffix(o, "\""), "\"")
 	}
-	return strings.TrimPrefix(strings.TrimSuffix(o, "\""), "\"")
+	return &o
 }

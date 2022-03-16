@@ -14,10 +14,11 @@ var (
 	version = "0.0.0"
 	commit  = "XXX"
 
-	config      = flag.String("c", "config.yml", "path to the config file (json or yaml)")
-	output      = flag.String("o", "", "path to the output base path")
-	schema      = flag.String("s", "", "path to the schema file (overrides defined in json config file) (default \"schema.yml\" if not defined in config)")
-	showVersion = flag.Bool("v", false, "show version")
+	config      = flag.String("c", "config.yml", "Path to the config file (json or yaml)")
+	output      = flag.String("o", "", "Path to the output base path")
+	schema      = flag.String("s", "", "Path to the schema file (overrides defined in json config file) (default \"schema.yml\" if not defined in config)")
+	rm          = flag.Bool("rm", false, "Clean output path before generating")
+	showVersion = flag.Bool("v", false, "Show version")
 	verbose     = flag.Bool("V", false, "Verbose output")
 )
 
@@ -73,6 +74,14 @@ func run() int {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return 1
 	}
+
+	if *rm && p.OutputBasePath != "" {
+		if err := os.RemoveAll(p.OutputBasePath); err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			return 1
+		}
+	}
+
 	for _, f := range files {
 		path := filepath.Dir(f.Filename)
 		if err := os.MkdirAll(path, os.ModePerm); err != nil {

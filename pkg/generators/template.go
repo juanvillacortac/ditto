@@ -3,6 +3,7 @@ package generators
 import (
 	"text/template"
 
+	"github.com/gertd/go-pluralize"
 	"github.com/iancoleman/strcase"
 	"github.com/juanvillacortac/rosetta/pkg/ast"
 )
@@ -17,5 +18,13 @@ func templateHelpers(models ast.ModelMap, options GenerateConfig) template.FuncM
 		"LowerCamelCase": strcase.ToLowerCamel,
 		"KebabCase":      strcase.ToKebab,
 		"SnakeCase":      strcase.ToSnake,
+		"Plural":      func(str string) string {
+			p := pluralize.NewClient()
+			return p.Plural(str)
+		},
+		"Singular":      func(str string) string {
+			p := pluralize.NewClient()
+			return p.Singular(str)
+		},
 	}
 }

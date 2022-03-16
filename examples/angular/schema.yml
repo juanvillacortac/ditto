@@ -6,6 +6,9 @@ Auxiliary:
   active: boolean
   idUser: int64
   userName: string
+  # OPTIONS
+  (list-filter): AuxiliaryListFilter
+  (filter): AuxiliaryFilter
 
 AuxiliaryListFilter:
   id:
@@ -17,6 +20,13 @@ AuxiliaryListFilter:
   idUser:
     type: int64
     default: -1
+  # OPTIONS
+  (service_ignore): true
+
+AuxiliaryFilter:
+  id: { type: int64, pk: true }
+  # OPTIONS
+  (service_ignore): true
 
 Vector:
   x: int64
