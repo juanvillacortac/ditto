@@ -1,0 +1,38 @@
+{
+  "name": "rosetta-gen",
+  "version": "1.0.17",
+  "description": "An extensible CLI tool for generic code generation ✨",
+  "scripts": {
+    "postinstall": "go-npm install",
+    "preuninstall": "go-npm uninstall"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juanvillacortac/rosetta.git"
+  },
+  "goBinary": {
+    "name": "rosetta",
+    "path": "./bin",
+    "url": "https://github.com/juanvillacortac/rosetta/releases/download/v{{version}}/rosetta_{{version}}_{{platform}}_{{arch}}.tar.gz"
+  },
+  "keywords": [
+    "cli",
+    "golang",
+    "go",
+    "codegen",
+    "code-gen",
+    "automatic",
+    "schema",
+    "dao",
+    "dba"
+  ],
+  "author": "juanvillacortac",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/juanvillacortac/rosetta/issues"
+  },
+  "homepage": "https://github.com/juanvillacortac/rosetta#readme",
+  "dependencies": {
+    "go-npm": "^0.1.9"
+  }
+}
