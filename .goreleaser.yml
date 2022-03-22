@@ -1,5 +1,6 @@
 builds:
-  - goos:
+  - binary: rosetta
+    goos:
       - darwin
       - linux
       - windows

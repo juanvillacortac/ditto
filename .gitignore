@@ -1,3 +1,5 @@
 rosetta
 rosetta.exe
 dist
+bin
+node_modules
