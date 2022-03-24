@@ -34,7 +34,7 @@ jobs:
         run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
 
       - name: Check version
-        run: echo "Version ${{ steps.vars.outputs.tag }}"
+        run: echo "Version ${{ github.event.client_payload.new-tag }}"
 
       - name: Use Node.js 16
         uses: actions/setup-node@v1
@@ -53,7 +53,7 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Bump NPM version
-        run: npm --no-git-tag-version --allow-same-version version ${{ steps.vars.outputs.tag }}
+        run: npm --no-git-tag-version --allow-same-version version ${{ github.event.client_payload.new-tag }}
 
       - name: NPM publish
         run: npm publish --access public
