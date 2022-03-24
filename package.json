@@ -1,5 +1,5 @@
 {
-  "name": "@ditto/cli",
+  "name": "ditto-gen",
   "version": "0.0.0",
   "description": "An extensible CLI tool for generic code generation ✨",
   "scripts": {
