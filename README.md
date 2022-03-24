@@ -1,6 +1,7 @@
 # Rosetta ✨
 
 [![GoDoc](https://godoc.org/github.com/juanvillacortac/rosetta?status.svg)](https://godoc.org/github.com/juanvillacortac/rosetta)
+[![Release CLI](https://github.com/juanvillacortac/rosetta/actions/workflows/release.yml/badge.svg)](https://github.com/juanvillacortac/rosetta/actions/workflows/release.yml)
 
 An extensible CLI tool for generic code generation based in Protobuff and YAML source files
 
