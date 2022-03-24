@@ -1,6 +1,6 @@
 {
   "name": "rosetta-gen",
-  "version": "1.0.18",
+  "version": "0.0.0",
   "description": "An extensible CLI tool for generic code generation ✨",
   "scripts": {
     "postinstall": "go-npm install",
