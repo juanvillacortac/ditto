@@ -25,6 +25,11 @@ type (
 	}
 )
 
+type OutputFile struct {
+	Filename string
+	Body     string
+}
+
 type GenerateConfig struct {
 	Name     string `json:"name" yaml:"name"`
 	Template string `json:"template,omitempty" yaml:"template,omitempty"`

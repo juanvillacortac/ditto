@@ -79,7 +79,7 @@ func (models ModelMap) ModelDependencies(model interface{}) []*Model {
 	}
 
 	for _, p := range m.Props {
-		if mm, ok := models[string(p.Type)]; ok {
+		if mm, ok := models[p.Type]; ok && p.Type != m.ModelName {
 			ok := false
 			for _, d := range deps {
 				if d.ModelName == mm.ModelName {
