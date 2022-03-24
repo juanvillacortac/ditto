@@ -5,7 +5,7 @@ import (
 
 	"github.com/gertd/go-pluralize"
 	"github.com/iancoleman/strcase"
-	"github.com/juanvillacortac/rosetta/pkg/ast"
+	"github.com/juanvillacortac/ditto/pkg/ast"
 )
 
 func templateHelpers(models ast.ModelMap, options GenerateConfig) template.FuncMap {

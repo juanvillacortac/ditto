@@ -7,7 +7,7 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/juanvillacortac/rosetta/pkg/program"
+	"github.com/juanvillacortac/ditto/pkg/program"
 )
 
 var (
@@ -27,7 +27,7 @@ func run() int {
 
 	if *showVersion {
 		if *verbose {
-			fmt.Fprintf(os.Stdout, "Rosetta v%v - Commit hash %v\n", version, commit)
+			fmt.Fprintf(os.Stdout, "Ditto v%v - Commit hash %v\n", version, commit)
 		} else {
 			fmt.Fprintf(os.Stdout, "v%v\n", version)
 		}

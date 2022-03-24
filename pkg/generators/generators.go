@@ -8,7 +8,7 @@ import (
 	"text/template"
 
 	"github.com/iancoleman/strcase"
-	"github.com/juanvillacortac/rosetta/pkg/ast"
+	"github.com/juanvillacortac/ditto/pkg/ast"
 )
 
 type (

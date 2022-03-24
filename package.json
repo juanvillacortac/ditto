@@ -1,5 +1,5 @@
 {
-  "name": "rosetta-gen",
+  "name": "ditto",
   "version": "0.0.0",
   "description": "An extensible CLI tool for generic code generation ✨",
   "scripts": {
@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/juanvillacortac/rosetta.git"
+    "url": "git+https://github.com/juanvillacortac/ditto.git"
   },
   "goBinary": {
-    "name": "rosetta",
+    "name": "ditto",
     "path": "./bin",
-    "url": "https://github.com/juanvillacortac/rosetta/releases/download/v{{version}}/rosetta_{{version}}_{{platform}}_{{arch}}.tar.gz"
+    "url": "https://github.com/juanvillacortac/ditto/releases/download/v{{version}}/ditto_{{version}}_{{platform}}_{{arch}}.tar.gz"
   },
   "keywords": [
     "cli",
@@ -29,9 +29,9 @@
   "author": "juanvillacortac",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/juanvillacortac/rosetta/issues"
+    "url": "https://github.com/juanvillacortac/ditto/issues"
   },
-  "homepage": "https://github.com/juanvillacortac/rosetta#readme",
+  "homepage": "https://github.com/juanvillacortac/ditto#readme",
   "dependencies": {
     "go-npm": "^0.1.9"
   }

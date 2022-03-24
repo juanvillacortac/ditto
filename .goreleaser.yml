@@ -1,5 +1,5 @@
 builds:
-  - binary: rosetta
+  - binary: ditto
     goos:
       - darwin
       - linux
@@ -8,4 +8,4 @@ builds:
       - amd64
       - arm64
     ldflags:
-      - -s -w -X github.com/juanvillacortac/rosetta/cmd.version={{.Version}} -X github.com/juanvillacortac/rosetta/cmd.commit={{.Commit}}
+      - -s -w -X github.com/juanvillacortac/ditto/cmd.version={{.Version}} -X github.com/juanvillacortac/ditto/cmd.commit={{.Commit}}

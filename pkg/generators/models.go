@@ -1,6 +1,6 @@
 package generators
 
-import "github.com/juanvillacortac/rosetta/pkg/ast"
+import "github.com/juanvillacortac/ditto/pkg/ast"
 
 type OutputFile struct {
 	Filename string

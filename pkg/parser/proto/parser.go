@@ -5,9 +5,9 @@ import (
 	"io"
 	"strings"
 
-	"github.com/juanvillacortac/rosetta/pkg/ast"
-	"github.com/juanvillacortac/rosetta/pkg/types"
-	"github.com/juanvillacortac/rosetta/pkg/utils"
+	"github.com/juanvillacortac/ditto/pkg/ast"
+	"github.com/juanvillacortac/ditto/pkg/types"
+	"github.com/juanvillacortac/ditto/pkg/utils"
 
 	p_ "github.com/yoheimuta/go-protoparser/v4"
 	protoparser "github.com/yoheimuta/go-protoparser/v4/parser"

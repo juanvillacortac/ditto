@@ -1,4 +1,4 @@
-module github.com/juanvillacortac/rosetta
+module github.com/juanvillacortac/ditto
 
 go 1.17
 

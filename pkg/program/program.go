@@ -7,10 +7,10 @@ import (
 	"os"
 	"path"
 
-	"github.com/juanvillacortac/rosetta/pkg/ast"
-	"github.com/juanvillacortac/rosetta/pkg/generators"
-	"github.com/juanvillacortac/rosetta/pkg/parser/proto"
-	"github.com/juanvillacortac/rosetta/pkg/parser/yaml"
+	"github.com/juanvillacortac/ditto/pkg/ast"
+	"github.com/juanvillacortac/ditto/pkg/generators"
+	"github.com/juanvillacortac/ditto/pkg/parser/proto"
+	"github.com/juanvillacortac/ditto/pkg/parser/yaml"
 
 	y "gopkg.in/yaml.v2"
 )

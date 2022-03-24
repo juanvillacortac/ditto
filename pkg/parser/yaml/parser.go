@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/juanvillacortac/rosetta/pkg/ast"
-	"github.com/juanvillacortac/rosetta/pkg/utils"
+	"github.com/juanvillacortac/ditto/pkg/ast"
+	"github.com/juanvillacortac/ditto/pkg/utils"
 	"gopkg.in/yaml.v2"
 )
 

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/juanvillacortac/rosetta/cmd"
+	"github.com/juanvillacortac/ditto/cmd"
 )
 
 func main() {
