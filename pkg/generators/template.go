@@ -1,16 +1,27 @@
 package generators
 
 import (
+	"bytes"
 	"strings"
 	"text/template"
 
 	"github.com/gertd/go-pluralize"
 	"github.com/iancoleman/strcase"
 	"github.com/juanvillacortac/ditto/pkg/ast"
+
+	"github.com/Masterminds/sprig"
 )
 
-func templateHelpers(models ast.ModelMap, options GenerateConfig) template.FuncMap {
-	return template.FuncMap{
+func templateHelpers(t *template.Template, models ast.ModelMap, options GenerateConfig) template.FuncMap {
+	funcs := template.FuncMap{
+		"ExecTmpl": func(name string, obj interface{}) string {
+			buf := &bytes.Buffer{}
+			err := t.ExecuteTemplate(buf, name, obj)
+			if err != nil {
+				panic(err)
+			}
+			return buf.String()
+		},
 		"Models":     func() ast.ModelMap { return models },
 		"Model":      func(modelName string) *ast.Model { return models[modelName] },
 		"ModelDeps":  models.ModelDependencies,
@@ -34,6 +45,10 @@ func templateHelpers(models ast.ModelMap, options GenerateConfig) template.FuncM
 			return p.Singular(str)
 		},
 	}
+	for k, v := range sprig.FuncMap() {
+		funcs[k] = v
+	}
+	return funcs
 }
 
 type TemplateContext struct {
@@ -42,7 +57,8 @@ type TemplateContext struct {
 }
 
 func createTemplate(name string, content string, models ast.ModelMap, options GenerateConfig) (*template.Template, error) {
-	return template.New(name).Funcs(templateHelpers(models, options)).Parse(content)
+	t := template.New(name)
+	return t.Funcs(templateHelpers(t, models, options)).Parse(content)
 }
 
 func execTemplate(t *template.Template, context *TemplateContext) (string, error) {
