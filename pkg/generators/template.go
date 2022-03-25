@@ -1,6 +1,7 @@
 package generators
 
 import (
+	"strings"
 	"text/template"
 
 	"github.com/gertd/go-pluralize"
@@ -33,4 +34,21 @@ func templateHelpers(models ast.ModelMap, options GenerateConfig) template.FuncM
 			return p.Singular(str)
 		},
 	}
+}
+
+type TemplateContext struct {
+	Root  *ast.RootNode
+	Model *ast.Model
+}
+
+func createTemplate(name string, content string, models ast.ModelMap, options GenerateConfig) (*template.Template, error) {
+	return template.New(name).Funcs(templateHelpers(models, options)).Parse(content)
+}
+
+func execTemplate(t *template.Template, context *TemplateContext) (string, error) {
+	writer := &strings.Builder{}
+	if err := t.Execute(writer, context); err != nil {
+		return "", err
+	}
+	return writer.String(), nil
 }

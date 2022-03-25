@@ -4,10 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"strings"
-	"text/template"
 
-	"github.com/iancoleman/strcase"
 	"github.com/juanvillacortac/ditto/pkg/ast"
 )
 
@@ -85,13 +82,21 @@ func Generate(root *ast.RootNode, config GenerateConfig, verbose bool) ([]Output
 		Types:   config.Types,
 		Helpers: config.Helpers,
 	})
-	t, err := template.New(config.Name).Funcs(templateHelpers(models, config)).Parse(config.Template)
+	t, err := createTemplate(config.Name, config.Template, models, config)
+	if err != nil {
+		return nil, err
+	}
+	ot, err := createTemplate(config.Name, config.Output, models, config)
 	if err != nil {
 		return nil, err
 	}
 	files := make([]OutputFile, 0)
 	cnt := 0
 	for _, m := range models {
+		context := &TemplateContext{
+			Root:  root,
+			Model: m,
+		}
 		if val, ok := m.ModelOptions[config.Ignore]; ok && val == "true" {
 			continue
 		}
@@ -99,24 +104,17 @@ func Generate(root *ast.RootNode, config GenerateConfig, verbose bool) ([]Output
 			fmt.Fprintf(os.Stdout, "-> [%d/%d] Generating \"%s\"\n", cnt+1, len(models), m.Name())
 		}
 
-		writer := &strings.Builder{}
-		err = t.Execute(writer, &struct {
-			Root  *ast.RootNode
-			Model *ast.Model
-		}{
-			Root:  root,
-			Model: m,
-		})
+		body, err := execTemplate(t, context)
 		if err != nil {
 			return nil, err
 		}
-		filename := strings.ReplaceAll(config.Output, "[model]", m.ModelName)
-		filename = strings.ReplaceAll(filename, "[Model]", strcase.ToCamel(m.ModelName))
-		filename = strings.ReplaceAll(filename, "[model_]", strcase.ToSnake(m.ModelName))
-		filename = strings.ReplaceAll(filename, "[model-]", strcase.ToKebab(m.ModelName))
+		output, err := execTemplate(ot, context)
+		if err != nil {
+			return nil, err
+		}
 		files = append(files, OutputFile{
-			Filename: filename,
-			Body:     writer.String(),
+			Filename: output,
+			Body:     body,
 		})
 		cnt++
 	}
