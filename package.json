@@ -6,6 +6,9 @@
     "postinstall": "go-npm install",
     "preuninstall": "go-npm uninstall"
   },
+  "bin": {
+    "ditto": "node_modules/.bin/ditto"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/juanvillacortac/ditto.git"
@@ -33,6 +36,6 @@
   },
   "homepage": "https://github.com/juanvillacortac/ditto#readme",
   "dependencies": {
-    "go-npm": "^0.1.9"
+    "@gzuidhof/go-npm": "^0.1.13"
   }
 }
