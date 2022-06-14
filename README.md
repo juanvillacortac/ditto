@@ -7,10 +7,6 @@ An extensible schema-based CLI tool for generic code generation
 
 ![](https://c.tenor.com/IA266nP_INIAAAAC/ditto-pokemon.gif)
 
-## Why?
-Because in my actual work we have a tedious developing workflow. We don't use ORMs and we adopt a "microservices" project structure try.
-I develop this tool for generate C# microservices, Angular models and services and SQLServer SPs based in a user given schema in a single shot.
-
 ## Features
 
 * Multiformat (YAML, Protobuf and Json).
