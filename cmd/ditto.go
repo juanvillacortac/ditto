@@ -7,6 +7,9 @@ import (
 	"path"
 	"path/filepath"
 
+	"golang.org/x/sync/errgroup"
+
+	"github.com/juanvillacortac/ditto/pkg/generators"
 	"github.com/juanvillacortac/ditto/pkg/program"
 )
 
@@ -21,6 +24,17 @@ var (
 	showVersion = flag.Bool("v", false, "Show version")
 	verbose     = flag.Bool("V", false, "Verbose output")
 )
+
+func writeFile(file generators.OutputFile) error {
+	path := filepath.Dir(file.Filename)
+	if err := os.MkdirAll(path, os.ModePerm); err != nil {
+		return err
+	}
+	if err := os.WriteFile(file.Filename, []byte(file.Body), os.ModePerm); err != nil {
+		return err
+	}
+	return nil
+}
 
 func run() int {
 	flag.Parse()
@@ -82,16 +96,18 @@ func run() int {
 		}
 	}
 
+	errg := new(errgroup.Group)
+	errg.SetLimit(len(files))
+
 	for _, f := range files {
-		path := filepath.Dir(f.Filename)
-		if err := os.MkdirAll(path, os.ModePerm); err != nil {
-			fmt.Fprintf(os.Stderr, "%v\n", err)
-			return 1
-		}
-		if err := os.WriteFile(f.Filename, []byte(f.Body), os.ModePerm); err != nil {
-			fmt.Fprintf(os.Stderr, "%v\n", err)
-			return 1
-		}
+		f := f
+		errg.Go(func() error {
+			return writeFile(f)
+		})
+	}
+
+	if err := errg.Wait(); err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
 	}
 	fmt.Println("Done!")
 	return 0
